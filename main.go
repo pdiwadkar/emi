@@ -92,6 +92,7 @@ func CreatePaymentSchedule(fn string, numEMI int) {
 }
 
 //Add footer message at the end of the page.
+//Default margin set to 25
 func AddFooter(pdf *gofpdf.Fpdf, msg string) {
 	_, h := pdf.GetPageSize()
 	var Y = pdf.GetY()
