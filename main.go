@@ -33,7 +33,7 @@ const (
 	marginY         = 20.0
 	PaperSize       = "A4"
 	LoanNumber      = "Loan Number"
-	LoanNumberWidth = 25
+	LoanNumberWidth = 28
 
 	LoanBookedDate      = "Loan Booked Date"
 	LoanBookedDateWidth = 25
@@ -62,9 +62,9 @@ func main() {
 	var ct int
 
 	//fn := "Payment1" + ".pdf"
-	for t := 0; t < 5; t++ {
+	for t := 0; t < 10; t++ {
 		fn := "Payment" + strconv.Itoa(t+1) + ".pdf"
-		go CreatePaymentSchedule(fn, 50)
+		go CreatePaymentSchedule(fn, 10)
 	}
 
 	fmt.Scanln(&ct)
@@ -98,7 +98,7 @@ func AddFooter(pdf *gofpdf.Fpdf, msg string) {
 	var Y = pdf.GetY()
 	Y = h - FooterMargin
 	pdf.SetY(Y)
-	pdf.SetFont("Arial", "B", 12)
+	pdf.SetFont("Arial", "B", 9)
 	pdf.SetFooterFunc(func() {
 		pdf.CellFormat(200, 25, msg, "0", 0, "L", false, 0, "")
 	})
@@ -121,7 +121,6 @@ func RemoveFileFromDisk(fn string) bool {
 			fmt.Println("File Removed")
 		}
 	}
-
 	return true
 
 }
@@ -169,14 +168,14 @@ func AddLoanTableToPage(pdf *gofpdf.Fpdf) {
 		Tenure:               18,
 		OutStandingPrincipal: 3882.93,
 	}
-
-	pdf.CellFormat(LoanNumberWidth, 7, loanInfo.LoanNumber, "1", 0, "C", false, 0, "")
-	pdf.CellFormat(LoanBookedDateWidth, 7, loanInfo.LoanBookedDate, "1", 0, "C", false, 0, "")
-	pdf.CellFormat(LoanTypeWidth, 7, loanInfo.LoanType, "1", 0, "C", false, 0, "")
-	pdf.CellFormat(PrincipalAmountWidth, 7, fmt.Sprintf("%v", loanInfo.PrincipalAmount), "1", 0, "C", false, 0, "")
-	pdf.CellFormat(InterestRateWidth, 7, fmt.Sprintf("%v", loanInfo.InterestRate), "1", 0, "C", false, 0, "")
-	pdf.CellFormat(TenureWidth, 7, fmt.Sprintf("%v", loanInfo.Tenure), "1", 0, "C", false, 0, "")
-	pdf.CellFormat(OutstandingPriWidth, 7, fmt.Sprintf("%v", loanInfo.OutStandingPrincipal), "1", 0, "C", false, 0, "")
+	pdf.SetFont("Arial", "", 7)
+	pdf.CellFormat(LoanNumberWidth, 6, loanInfo.LoanNumber, "1", 0, "C", false, 0, "")
+	pdf.CellFormat(LoanBookedDateWidth, 6, loanInfo.LoanBookedDate, "1", 0, "C", false, 0, "")
+	pdf.CellFormat(LoanTypeWidth, 6, loanInfo.LoanType, "1", 0, "C", false, 0, "")
+	pdf.CellFormat(PrincipalAmountWidth, 6, fmt.Sprintf("%v", loanInfo.PrincipalAmount), "1", 0, "C", false, 0, "")
+	pdf.CellFormat(InterestRateWidth, 6, fmt.Sprintf("%v", loanInfo.InterestRate), "1", 0, "C", false, 0, "")
+	pdf.CellFormat(TenureWidth, 6, fmt.Sprintf("%v", loanInfo.Tenure), "1", 0, "C", false, 0, "")
+	pdf.CellFormat(OutstandingPriWidth, 6, fmt.Sprintf("%v", loanInfo.OutStandingPrincipal), "1", 0, "C", false, 0, "")
 	//fill EMI data
 	pdf.Ln(-1)
 	pdf.Ln(-1)
@@ -185,6 +184,7 @@ func AddLoanTableToPage(pdf *gofpdf.Fpdf) {
 func PageSetup(pdf *gofpdf.Fpdf) *gofpdf.Fpdf {
 	pdf = gofpdf.New("P", "mm", PaperSize, "")
 	pdf.SetMargins(marginX, marginY, marginX)
+
 	pdf.AddPage()
 	pdf.SetAuthor("HDFC Credit Card Division", true)
 	//HDFC Logo image.. (Common images path/resources path)
