@@ -44,6 +44,8 @@ const (
 	PrincipalAmt         = "Principal \n Amount (Rs.)"
 	PrincipalAmountWidth = 25
 
+	hdfcLogoPath = "//Users//p26345//GoWorkspace//Hdfc-bank-logo.png"
+
 	InterestRate      = "Interest Rate (%)"
 	InterestRateWidth = 25
 
@@ -57,11 +59,23 @@ const (
 	FooterMargin  = 25
 )
 
+func main4() {
+
+}
+func IsEven(n int) bool {
+	return n%2 == 0
+}
+
+func Concatenatebuffer(s1 string, s2 string) string {
+	var buf bytes.Buffer
+	buf.WriteString(s1)
+	buf.WriteString(s2)
+	return buf.String()
+}
 func main() {
 
 	var ct int
 
-	//fn := "Payment1" + ".pdf"
 	for t := 0; t < 10; t++ {
 		fn := "Payment" + strconv.Itoa(t+1) + ".pdf"
 		go CreatePaymentSchedule(fn, 10)
@@ -72,6 +86,7 @@ func main() {
 }
 
 func CreatePaymentSchedule(fn string, numEMI int) {
+
 	var pdf *gofpdf.Fpdf
 	pdf = PageSetup(pdf)
 	pdf.SetFont("Arial", "BU", 12)
@@ -168,6 +183,7 @@ func AddLoanTableToPage(pdf *gofpdf.Fpdf) {
 		Tenure:               18,
 		OutStandingPrincipal: 3882.93,
 	}
+
 	pdf.SetFont("Arial", "", 7)
 	pdf.CellFormat(LoanNumberWidth, 6, loanInfo.LoanNumber, "1", 0, "C", false, 0, "")
 	pdf.CellFormat(LoanBookedDateWidth, 6, loanInfo.LoanBookedDate, "1", 0, "C", false, 0, "")
@@ -188,7 +204,7 @@ func PageSetup(pdf *gofpdf.Fpdf) *gofpdf.Fpdf {
 	pdf.AddPage()
 	pdf.SetAuthor("HDFC Credit Card Division", true)
 	//HDFC Logo image.. (Common images path/resources path)
-	hdfcLogoPath := "//Users//p26345//GoWorkspace//hdfclogo.png"
+
 	pdf.ImageOptions(hdfcLogoPath, 10, 10, 40, 10, false, gofpdf.ImageOptions{}, 0, "")
 	return pdf
 }
