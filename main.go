@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -29,25 +31,23 @@ type EMIInfo struct {
 }
 
 const (
-	marginX         = 10.0
-	marginY         = 20.0
-	PaperSize       = "A4"
-	LoanNumber      = "Loan Number"
-	LoanNumberWidth = 28
-
-	LoanBookedDate      = "Loan Booked Date"
-	LoanBookedDateWidth = 25
-
-	LoanType      = "Loan Type"
-	LoanTypeWidth = 25
-
+	hdfcLogoLocalPath    = "//Users//p26345//GoWorkspace//Hdfc-bank-logo.png"
+	hdfcLogoPath         = "https://firebasestorage.googleapis.com/v0/b/hdfcbank-mobile-banking.appspot.com/o/BankLogos%2Fimage%2024104.png?alt=media&token=0bb87be5-b94a-4a2e-9f78-a3caec165d5b"
+	logoWidth            = 20
+	logoHeight           = 20
+	marginX              = 10.0
+	marginY              = 20.0
+	PaperSize            = "A4"
+	LoanNumber           = "Loan Number"
+	LoanNumberWidth      = 28
+	LoanBookedDate       = "Loan Booked Date"
+	LoanBookedDateWidth  = 25
+	LoanType             = "Loan Type"
+	LoanTypeWidth        = 25
 	PrincipalAmt         = "Principal \n Amount (Rs.)"
 	PrincipalAmountWidth = 25
-
-	hdfcLogoPath = "//Users//p26345//GoWorkspace//Hdfc-bank-logo.png"
-
-	InterestRate      = "Interest Rate (%)"
-	InterestRateWidth = 25
+	InterestRate         = "Interest Rate (%)"
+	InterestRateWidth    = 25
 
 	Tenure      = "Tenure \n (months)"
 	TenureWidth = 25
@@ -59,9 +59,6 @@ const (
 	FooterMargin  = 25
 )
 
-func main4() {
-
-}
 func IsEven(n int) bool {
 	return n%2 == 0
 }
@@ -76,6 +73,12 @@ func main() {
 
 	var ct int
 
+	if ReadImageFromCDN() {
+		fmt.Println("Logo copied from  CDN")
+	} else {
+		log.Println("Unable to fetch logo.. Fetching from local repo")
+		//code to fetch from local repo
+	}
 	for t := 0; t < 10; t++ {
 		fn := "Payment" + strconv.Itoa(t+1) + ".pdf"
 		go CreatePaymentSchedule(fn, 10)
@@ -83,6 +86,24 @@ func main() {
 
 	fmt.Scanln(&ct)
 
+}
+
+func ReadImageFromCDN() bool {
+	resp, err := http.Get(hdfcLogoPath)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	img, err := os.Create(hdfcLogoLocalPath)
+	if err != nil {
+		return false
+	}
+	ct, err := io.Copy(img, resp.Body)
+	if err != nil {
+		return false
+	}
+	fmt.Println("Image copied from CDN:: bytes ", ct)
+	return true
 }
 
 func CreatePaymentSchedule(fn string, numEMI int) {
@@ -204,8 +225,11 @@ func PageSetup(pdf *gofpdf.Fpdf) *gofpdf.Fpdf {
 	pdf.AddPage()
 	pdf.SetAuthor("HDFC Credit Card Division", true)
 	//HDFC Logo image.. (Common images path/resources path)
+	width := float64(logoWidth)
+	height := float64(logoHeight)
 
-	pdf.ImageOptions(hdfcLogoPath, 10, 10, 40, 10, false, gofpdf.ImageOptions{}, 0, "")
+	pdf.ImageOptions(hdfcLogoLocalPath, 10, 10, width, height, false, gofpdf.ImageOptions{}, 0, "")
+
 	return pdf
 }
 
