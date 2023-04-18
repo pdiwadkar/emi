@@ -59,16 +59,6 @@ const (
 	FooterMargin  = 25
 )
 
-func IsEven(n int) bool {
-	return n%2 == 0
-}
-
-func Concatenatebuffer(s1 string, s2 string) string {
-	var buf bytes.Buffer
-	buf.WriteString(s1)
-	buf.WriteString(s2)
-	return buf.String()
-}
 func main() {
 
 	var ct int
